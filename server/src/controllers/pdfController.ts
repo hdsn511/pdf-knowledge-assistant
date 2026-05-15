@@ -20,18 +20,14 @@ export const uploadPdf = async (req: Request, res: Response) => {
   }
 };
 
-export const deletePdf = async (req: Request, res: Response) => {
+export const clearHistory = async (req: Request, res: Response) => {
   try {
-    const { filename } = req.params;
-    if (!filename) {
-      return res.status(400).json({ error: "File path is required" });
-    }
-    const filePath = `./uploads/${filename}`;
-    await fs.promises.unlink(filePath);
-
-    res.status(200).json({ message: "File deleted successfully" });
+    await fs.promises.rm('.faiss_db', { recursive: true, force: true });
+    await fs.promises.rm('./uploads', { recursive: true, force: true });
+    await fs.promises.mkdir('./uploads'); // recreate so multer doesn't break
+    res.status(200).json({ message: "History cleared successfully" });
   } catch (error) {
-    console.error("Error deleting file:", error);
-    res.status(500).json({ error: "Failed to delete file" });
+    console.error("Error clearing history:", error);
+    res.status(500).json({ error: "Failed to clear history" });
   }
 };
