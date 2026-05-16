@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
-import { Send, PanelLeftClose, PanelLeftOpen, Bot } from 'lucide-react';
-import { Button } from './ui/button';
-import type { Message } from '../types/index';
-import DocLogo from './DocLogo';
+import { Bot, PanelLeftClose, PanelLeftOpen, Send } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import type { Message } from "../types/index";
+import DocLogo from "./DocLogo";
+import { Button } from "./ui/button";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -12,32 +13,38 @@ interface ChatAreaProps {
   onQuery: (q: string) => void;
 }
 
-export default function ChatArea({ messages, loading, sidebarOpen, onToggleSidebar, onQuery }: ChatAreaProps) {
-  const [input, setInput] = useState('');
+export default function ChatArea({
+  messages,
+  loading,
+  sidebarOpen,
+  onToggleSidebar,
+  onQuery,
+}: ChatAreaProps) {
+  const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto scroll to bottom on new messages
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
   // Auto resize textarea
   useEffect(() => {
     const ta = textareaRef.current;
     if (!ta) return;
-    ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
   }, [input]);
 
   function handleSend() {
     if (!input.trim() || loading) return;
     onQuery(input.trim());
-    setInput('');
+    setInput("");
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -45,7 +52,6 @@ export default function ChatArea({ messages, loading, sidebarOpen, onToggleSideb
 
   return (
     <div className="h-full flex flex-col">
-
       {/* Top Bar */}
       <div className="h-14 px-4 flex items-center justify-between border-b border-[#2e241e] shrink-0">
         <Button
@@ -54,9 +60,15 @@ export default function ChatArea({ messages, loading, sidebarOpen, onToggleSideb
           className="text-[#787878] hover:text-[#eeeeee] hover:bg-[#2a211c]"
           onClick={onToggleSidebar}
         >
-          {sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+          {sidebarOpen ? (
+            <PanelLeftClose size={18} />
+          ) : (
+            <PanelLeftOpen size={18} />
+          )}
         </Button>
-        <span className="text-sm text-[#787878] font-sans">PDF Knowledge Assistant</span>
+        <span className="text-sm text-[#787878] font-sans">
+          PDF Knowledge Assistant
+        </span>
         <span className="text-xs text-[#787878] bg-[#2a211c] px-2 py-1 rounded-md">
           llama-3.3-70b
         </span>
@@ -69,29 +81,39 @@ export default function ChatArea({ messages, loading, sidebarOpen, onToggleSideb
             <div className="w-11 h-11 rounded-xl bg-[#2a211c] flex items-center justify-center">
               <DocLogo />
             </div>
-            <h2 className="font-serif text-[#ffe0c2] text-lg font-medium">PDF Knowledge Assistant</h2>
-            <p className="text-sm text-[#787878]">Upload a PDF and start asking questions</p>
+            <h2 className="font-serif text-[#ffe0c2] text-lg font-medium">
+              PDF Knowledge Assistant
+            </h2>
+            <p className="text-sm text-[#787878]">
+              Upload a PDF and start asking questions
+            </p>
           </div>
         ) : (
           <div className="max-w-3xl mx-auto px-6 py-6 space-y-4">
-            {messages.map(msg => (
+            {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start gap-3 items-start'}`}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start gap-3 items-start"}`}
               >
-                {msg.role === 'assistant' && (
+                {msg.role === "assistant" && (
                   <div className="w-7 h-7 rounded-lg bg-[#3d3028] flex items-center justify-center shrink-0 mt-1">
                     <Bot size={14} stroke="#ffe0c2" />
                   </div>
                 )}
                 <div
                   className={`max-w-[75%] px-4 py-3 text-sm leading-relaxed ${
-                    msg.role === 'user'
-                      ? 'bg-[#3d3028] text-[#ffe0c2] rounded-2xl rounded-tr-sm'
-                      : 'bg-[#221b17] text-[#e8ddd2] rounded-2xl rounded-tl-sm border border-[#382e25]'
+                    msg.role === "user"
+                      ? "bg-[#3d3028] text-[#ffe0c2] rounded-2xl rounded-tr-sm"
+                      : "bg-[#221b17] text-[#e8ddd2] rounded-2xl rounded-tl-sm border border-[#382e25]"
                   }`}
                 >
-                  {msg.content}
+                  {msg.role === "assistant" ? (
+                    <div className="prose prose-invert max-w-none">
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    msg.content
+                  )}
                 </div>
               </div>
             ))}
@@ -103,7 +125,7 @@ export default function ChatArea({ messages, loading, sidebarOpen, onToggleSideb
                   <Bot size={14} stroke="#ffe0c2" />
                 </div>
                 <div className="bg-[#221b17] border border-[#382e25] rounded-2xl rounded-tl-sm px-4 py-3 flex gap-1.5 items-center">
-                  {[0, 1, 2].map(i => (
+                  {[0, 1, 2].map((i) => (
                     <span
                       key={i}
                       className="w-1.5 h-1.5 rounded-full bg-[#a07e6a] animate-bounce"
@@ -124,19 +146,19 @@ export default function ChatArea({ messages, loading, sidebarOpen, onToggleSideb
           <textarea
             ref={textareaRef}
             value={input}
-            onChange={e => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask a question about your documents..."
             rows={1}
             className="flex-1 bg-transparent px-5 py-3.5 text-sm text-[#f0e6db] placeholder:text-[#787878] resize-none outline-none"
-            style={{ maxHeight: '120px' }}
+            style={{ maxHeight: "120px" }}
           />
           <Button
             size="icon"
             className={`m-2 p-2.5 rounded-xl transition-transform active:scale-95 ${
               input.trim() && !loading
-                ? 'bg-[#ffe0c2] text-[#1a1412] hover:scale-105'
-                : 'bg-[#322821] text-[#787878] opacity-20'
+                ? "bg-[#ffe0c2] text-[#1a1412] hover:scale-105"
+                : "bg-[#322821] text-[#787878] opacity-20"
             }`}
             onClick={handleSend}
             disabled={!input.trim() || loading}

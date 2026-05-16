@@ -11,10 +11,11 @@ export async function retrieve(query: string): Promise<string> {
   const retrievalResults = await store.similaritySearch(query, 3);
 
   const prompt = ChatPromptTemplate.fromTemplate(`
-    You are a sharp, direct assistant. Answer concisely using only the provided context.
-    No lists unless the question asks for them. No preamble. Just answer.
-    If the context is irrelevant, say "I don't see that in the document."
-
+    Provide an answer to the users question, use context, if any.
+    Elaborate on every detail you can respective to the goal for the user for a max
+    of 8 sentences. But aim for 3-5 sentences. A user wants to know the important things,
+    which commonly means, summaries, high-level overviews, and critical details.
+    
     Question: {question}
     Context: {context}
   `);
