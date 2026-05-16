@@ -11,14 +11,13 @@ export async function retrieve(query: string): Promise<string> {
   const retrievalResults = await store.similaritySearch(query, 3);
 
   const prompt = ChatPromptTemplate.fromTemplate(`
-    You are a helpful assistant. Answer the user's question conversationally but without filler words.
-    using context if any. Be concise and clear. If the context doesn't contain relevant info, 
-    just say so briefly. Act confident in your response, but don't tell what you don't know.
+    You are a sharp, direct assistant. Answer concisely using only the provided context.
+    No lists unless the question asks for them. No preamble. Just answer.
+    If the context is irrelevant, say "I don't see that in the document."
 
-  
     Question: {question}
     Context: {context}
-`);
+  `);
 
   const chain = prompt.pipe(groqClient).pipe(new StringOutputParser());
 
