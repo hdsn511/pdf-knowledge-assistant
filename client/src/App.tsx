@@ -2,7 +2,7 @@ import { useState } from "react";
 import Sidebar from "./components/SideBar";
 import { useApi } from "./hooks/useApi";
 import type { Message, UploadedDoc } from "./types";
-//import ChatArea from './components/Chatarea';
+import ChatArea from './components/ChatArea';
 
 export default function App() {
   const [docs, setDocs] = useState<UploadedDoc[]>([]);
@@ -87,3 +87,4 @@ export default function App() {
     </div>
   );
 }
+

@@ -1,10 +1,11 @@
-import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import type { Document } from "@langchain/core/documents";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { PDFReader } from "@llamaindex/readers/pdf";
 import fs from "fs";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import type { Document as LlamaIndexDocument, Metadata } from "llamaindex";
 import { googleEmbeddings } from "../../config/aiConfig.js";
+import { getStore, setStore } from "./vectorStore.js";
 
 async function extractText(
   filePath: string,
@@ -27,15 +28,15 @@ async function chunkText(
 }
 
 async function storeEmbeddings(chunks: Document[]): Promise<void> {
-  const dbPath = ".faiss_db";
-
-  if (fs.existsSync(dbPath)) {
-    const existingStore = await FaissStore.load(dbPath, googleEmbeddings);
-    await existingStore.addDocuments(chunks);
-    await existingStore.save(dbPath);
+  const existing = getStore();
+  if (existing) {
+    await existing.addDocuments(chunks);
   } else {
-    const newStore = await FaissStore.fromDocuments(chunks, googleEmbeddings);
-    await newStore.save(dbPath);
+    const newStore = await MemoryVectorStore.fromDocuments(
+      chunks,
+      googleEmbeddings,
+    );
+    setStore(newStore);
   }
 }
 

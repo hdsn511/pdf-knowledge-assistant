@@ -1,7 +1,7 @@
 import type { UploadedDoc } from "../types/index";
 
 
-const BASE_URL = 'http://localhost:8000/api'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export function useApi() {
   async function uploadDocs(files: FileList): Promise<UploadedDoc[]> {
@@ -18,7 +18,7 @@ export function useApi() {
     }
     const data = await res.json();
     return data.filePaths.map((filePath: string) => ({
-      filename: filePath.split('/').pop() ?? filePath,
+      filename: filePath.split(/[\\/]/).pop() ?? filePath,
       filePath,
     }));
   }

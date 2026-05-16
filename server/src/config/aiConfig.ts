@@ -1,10 +1,11 @@
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { ChatGroq } from "@langchain/groq";
 export const googleEmbeddings = new GoogleGenerativeAIEmbeddings({
-  model: "text-embedding-004",
+ 
+  model: "gemini-embedding-001",
 });
 
 export const groqClient = new ChatGroq({
-  model: "llama-3.3-70b-versatile",
+  model: "llama-3.1-8b-instant",
   temperature: 0.1,
 });
