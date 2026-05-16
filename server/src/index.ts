@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://https://pdf-knowledge-assistant-plum.vercel.app/",
+      "https://https://pdf-knowledge-assistant-plum.vercel.app",
     ],
   }),
 );
