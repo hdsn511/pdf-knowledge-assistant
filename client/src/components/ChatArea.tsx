@@ -70,7 +70,7 @@ export default function ChatArea({
           PDF Knowledge Assistant
         </span>
         <span className="text-xs text-[#787878] bg-[#2a211c] px-2 py-1 rounded-md">
-          llama-3.3-70b
+          llama-3.1-8b-instant
         </span>
       </div>
 
